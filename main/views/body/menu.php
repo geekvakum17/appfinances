@@ -39,7 +39,7 @@ if (session_status() === PHP_SESSION_NONE) {
           <div class="d-flex justify-content-between">
             <div>
               <p class="text-sm mb-0 text-capitalize">Solde disponible</p>
-              <h4 class="mb-0">100.000 FCFA</h4>
+              <h4 class="mb-0"><?= $_SESSION['solde'] ?> FCFA</h4>
             </div>
             <div class="icon icon-md icon-shape bg-gradient-success shadow-dark shadow text-center border-radius-lg">
               <i class="material-symbols-rounded opacity-10">account_balance_wallet</i>
@@ -58,7 +58,7 @@ if (session_status() === PHP_SESSION_NONE) {
           <div class="d-flex justify-content-between">
             <div>
               <p class="text-sm mb-0 text-capitalize">Rémunération mensuelle</p>
-              <h4 class="mb-0">10.000 FCFA</h4>
+              <h4 class="mb-0">0 FCFA</h4>
             </div>
             <div class="icon icon-md icon-shape bg-gradient-success shadow-dark shadow text-center border-radius-lg">
               <i class="material-symbols-rounded opacity-10">trending_up</i>
@@ -71,25 +71,7 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
       </div>
     </div>
-    <!--  <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-        <div class="card">
-          <div class="card-header p-2 ps-3">
-            <div class="d-flex justify-content-between">
-              <div>
-                <p class="text-sm mb-0 text-capitalize">Today's Users</p>
-                <h4 class="mb-0">2300</h4>
-              </div>
-              <div class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                <i class="material-symbols-rounded opacity-10">person</i>
-              </div>
-            </div>
-          </div>
-          <hr class="dark horizontal my-0">
-          <div class="card-footer p-2 ps-3">
-            <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+3% </span>than last month</p>
-          </div>
-        </div>
-      </div> -->
+
     <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
       <div class="card">
         <div class="card-header p-2 ps-3">
@@ -158,7 +140,7 @@ if (session_status() === PHP_SESSION_NONE) {
               <h6 class="text-center mb-0">Salary</h6>
               <span class="text-xs">Belong Interactive</span>
               <hr class="horizontal dark my-3">
-              <h5 class="mb-0">2000 FCFA</h5>
+              <h5 class="mb-0">0 FCFA</h5>
             </div>
           </div>
         </div>
@@ -173,7 +155,7 @@ if (session_status() === PHP_SESSION_NONE) {
               <h6 class="text-center mb-0">Portefeuile</h6>
               <span class="text-xs">Freelance Payment</span>
               <hr class="horizontal dark my-3">
-              <h5 class="mb-0">455.00 FCFA</h5>
+              <h5 class="mb-0">0 FCFA</h5>
             </div>
           </div>
         </div>
