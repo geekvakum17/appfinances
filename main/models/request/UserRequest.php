@@ -173,7 +173,7 @@ class UserRequest
 
   public function getcompteclientById(string $codeClient): array|false
   {
-    $stmt = $this->databaseConnection->prepare('SELECT * FROM compteclient WHERE codeClient = :codeClient LIMIT 1');
+    $stmt = $this->databaseConnection->prepare('SELECT * FROM compte WHERE codeClient = :codeClient LIMIT 1');
     $stmt->bindValue(':codeClient', $codeClient, PDO::PARAM_STR);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);

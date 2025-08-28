@@ -137,10 +137,25 @@ if (session_status() === PHP_SESSION_NONE) {
               </div>
             </div>
             <div class="card-body pt-0 p-3 text-center">
-              <h6 class="text-center mb-0">Info</h6>
-              <span class="text-xs">Messages</span>
+              <h6 class="text-center mb-0">Mes Infos</h6>
+              <span class="text-xs">Releve, Rib </span>
               <hr class="horizontal dark my-3">
               <h5 class="mb-0"></h5>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-6">
+          <div class="card">
+            <div class="card-header mx-4 p-3 text-center">
+              <div class="icon icon-shape icon-lg bg-gradient-success shadow text-center border-radius-lg">
+                <i class="material-symbols-rounded opacity-10">account_balance_wallet</i>
+              </div>
+            </div>
+            <div class="card-body pt-0 p-3 text-center">
+              <h6 class="text-center mb-0">Cotisation Mensuel</h6>
+              <span class="text-xs"></span>
+              <hr class="horizontal dark my-3">
+              <h5 class="mb-0">0 FCFA</h5>
             </div>
           </div>
         </div>

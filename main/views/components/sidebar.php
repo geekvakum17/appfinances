@@ -23,6 +23,12 @@
        </li>
        <li class="nav-item">
          <a class="nav-link text-dark" href="#">
+           <i class="material-symbols-rounded opacity-5">payments</i>
+           <span class="nav-link-text ms-1">Virement</span>
+         </a>
+       </li>
+       <li class="nav-item">
+         <a class="nav-link text-dark" href="#">
            <i class="material-symbols-rounded opacity-5">sync_alt</i>
            <span class="nav-link-text ms-1">Transactions</span>
          </a>

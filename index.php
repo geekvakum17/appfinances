@@ -1,8 +1,15 @@
 <?php
+
+use Dotenv\Dotenv;
 // Démarrage sécurisé de la session
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
+
+// Charger Composer et Dotenv AVANT tout
+require __DIR__ . '/vendor/autoload.php';
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 // Chemin absolu vers main.php
 $mainPath = __DIR__ . '/main/main.php';
