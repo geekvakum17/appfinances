@@ -112,7 +112,13 @@ if (session_status() === PHP_SESSION_NONE) {
               <div class="d-flex">
                 <div class="me-4">
                   <p class="text-white text-sm opacity-8 mb-0"></p>
-                  <h6 class="text-white mb-0"><?= $_SESSION['nomorg']; ?></h6>
+                  <h6 class="text-white mb-0"><?php if ($_SESSION['nomorg'] != "") {
+                                                echo  $_SESSION['nomorg'];
+                                              } else if ($_SESSION['nompnomcli'] != "") {
+                                                echo  $_SESSION['nompnomcli'];
+                                              } else {
+                                                echo $_SESSION['nompcliaservices'];
+                                              }  ?></h6>
                 </div>
                 <div>
                   <p class="text-white text-sm opacity-8 mb-0">Expires</p>

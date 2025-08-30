@@ -23,11 +23,15 @@ switch ($instruction) {
             $data = $resultat; // Pas $resultat[0]
             $id_role = $data['typeuser'];
             $codeClient = $data['codeClient'];
-            //$resultat1 = $UserRequest->getRole($id_role);
-            //$_SESSION['role'] = $resultat1[0]['role'] ?? '';
             $resultat2 = $UserRequest->getclientorganismeById($codeClient);
             $data0 = $resultat2;
             $_SESSION['nomorg'] = $data0['nomorg'];
+            $resultat4 = $UserRequest->getclientparticuliersById($codeClient);
+            $data2 = $resultat4;
+            $_SESSION['nompnomcli'] = $data2['nompnomcli'];
+            $resultat5 = $UserRequest->getclientautreserviceById($codeClient);
+            $data3 = $resultat5;
+            $_SESSION['nompcliaservices'] = $data3['nompnomcli'];
             $resultat3 = $UserRequest->getcompteclientById($codeClient);
             $data1 = $resultat3;
             $_SESSION['numeroCompte'] = $data1['numeroCompte'];

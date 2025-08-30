@@ -181,4 +181,30 @@ class UserRequest
   }
 
   /****************** FIN OPERATIONS CLIENT ORGANISME *******************/
+
+  /****************** OPERATIONS CLIENT PARTICULIERS *******************/
+  // Récupérer un client organisme par ID
+  public function getclientparticuliersById(string $codeClient): array|false
+  {
+    $stmt = $this->databaseConnection->prepare('SELECT * FROM clientparticulier WHERE codeClient = :codeClient LIMIT 1');
+    $stmt->bindValue(':codeClient', $codeClient, PDO::PARAM_STR);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result ?: false;
+  }
+
+  /****************** FIN OPERATIONS CLIENT ORGANISME *******************/
+
+  /****************** OPERATIONS CLIENT AUTRES SERVICES *******************/
+  // Récupérer un client organisme par ID
+  public function getclientautreserviceById(string $codeClient): array|false
+  {
+    $stmt = $this->databaseConnection->prepare('SELECT * FROM clientautreservice WHERE codeClient = :codeClient LIMIT 1');
+    $stmt->bindValue(':codeClient', $codeClient, PDO::PARAM_STR);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result ?: false;
+  }
+
+  /****************** FIN OPERATIONS CLIENT AUTRES SERVICES *******************/
 }
