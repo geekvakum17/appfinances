@@ -40,7 +40,7 @@ switch ($instruction) {
             header("Location: {$urlBase}?page=menu");
             exit();
         } else {
-            $_SESSION['error'] = 1;
+            $_SESSION['error'] = "nom utilisateur ou mot de passe incorrecte";
             header("Location: {$urlBase}?page=login");
             exit();
         }
