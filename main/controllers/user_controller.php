@@ -18,6 +18,7 @@ switch ($instruction) {
         $username = getPost('username');
         $password = getPost('password');
         $resultat = $UserRequest->authenticateUser($username, $password);
+
         if (is_array($resultat) && !empty($resultat)) {
             // $resultat est déjà un tableau associatif unique
             $data = $resultat; // Pas $resultat[0]

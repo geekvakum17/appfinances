@@ -19,7 +19,7 @@
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
               <div class="bg-gradient-success shadow-dark border-radius-lg py-3 pe-1">
                 <center><img class="img-fluid" src="public/assets/img/logo.png" width="50px" ; height="50px" ; alt=""></center>
-                <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">AhlyFinances</h4>
+                <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">AHLY DAR EL SALAM FINANCE</h4>
               </div>
             </div>
             <?php
@@ -37,12 +37,12 @@
               <form role="form" class="text-start" method="post" action="./?page=user">
                 <input type="hidden" name="instruction" value="login" />
                 <div class="input-group input-group-outline my-3">
-                  <label class="form-label">Login</label>
-                  <input type="text" class="form-control" name="username" required>
+                  <label class="form-label">Nom Utilisateur</label>
+                  <input type="text" class="form-control" name="Nom Utilisateur" required>
                 </div>
                 <div class="input-group input-group-outline mb-3">
                   <label class="form-label">Mot de Passe</label>
-                  <input type="password" class="form-control" name="password" required>
+                  <input type="password" class="form-control" name="Mot de Passe" required>
                 </div>
                 <div class="text-center">
                   <button type="submit" class="btn bg-gradient-success w-100 my-4 mb-2">Connexion</button>
