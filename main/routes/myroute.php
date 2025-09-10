@@ -37,103 +37,43 @@ switch ($page) {
     }
     break;
 
+  case 'infoget':
+    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
+      include './main/api/getinfoconcter.php';
+      include './main/views/components/footer.php';
+    } else {
+      include './main/views/components/head.php';
+      include './main/views/body/login.php';
+    }
+    break;
+
+  case 'verif':
+    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
+      include './main/api/verifierCompte.php';
+    } else {
+      include './main/views/components/head.php';
+      include './main/views/body/login.php';
+    }
+    break;
+
+  case 'transfere':
+    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
+      include './main/views/components/head.php';
+      include './main/views/components/sidebar.php';
+      include './main/views/components/header.php';
+      include './main/views/body/ftransfere.php';
+      include './main/views/components/footer.php';
+    } else {
+      include './main/views/components/head.php';
+      include './main/views/body/login.php';
+    }
+    break;
+
   case 'test':
     include './main/views/body/test.php';
     break;
-  case 'test1':
-    include './main/views/body/test1.php';
-    break;
 
-  case 'roles':
-    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-      include './main/views/components/backend/head.php';
-      include './main/views/components/backend/header.php';
-      include './main/views/components/backend/sidebar.php';
-      include './main/views/body/backend/roles.php';
-      include './main/views/components/backend/footer.php';
-    } else {
-      include './main/views/components/backend/head.php';
-      include './main/views/body/backend/login.php';
-    }
-    break;
 
-  case 'users':
-    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-      include './main/views/components/backend/head.php';
-      include './main/views/components/backend/header.php';
-      include './main/views/components/backend/sidebar.php';
-      include './main/views/body/backend/users.php';
-      include './main/views/components/backend/footer.php';
-    } else {
-      include './main/views/components/backend/head.php';
-      include './main/views/body/backend/login.php';
-    }
-    break;
-
-  case 'addorganismes':
-    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-      include './main/views/components/backend/head.php';
-      include './main/views/components/backend/header.php';
-      include './main/views/components/backend/sidebar.php';
-      include './main/views/body/backend/addorganismes.php';
-      include './main/views/components/backend/footer.php';
-    } else {
-      include './main/views/components/backend/head.php';
-      include './main/views/body/backend/login.php';
-    }
-    break;
-
-  case 'profiles':
-    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-      include './main/views/components/backend/head.php';
-      include './main/views/components/backend/header.php';
-      include './main/views/components/backend/sidebar.php';
-      include './main/views/body/backend/profiles.php';
-      include './main/views/components/backend/footer.php';
-    } else {
-      include './main/views/components/backend/head.php';
-      include './main/views/body/backend/login.php';
-    }
-    break;
-
-  case 'compte':
-    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-      include './main/views/components/backend/head.php';
-      include './main/views/components/backend/header.php';
-      include './main/views/components/backend/sidebar.php';
-      include './main/views/body/backend/compte.php';
-      include './main/views/components/backend/footer.php';
-    } else {
-      include './main/views/components/backend/head.php';
-      include './main/views/body/backend/login.php';
-    }
-    break;
-
-  case 'listecompte':
-    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-      include './main/views/components/backend/head.php';
-      include './main/views/components/backend/header.php';
-      include './main/views/components/backend/sidebar.php';
-      include './main/views/body/backend/listecompte.php';
-      include './main/views/components/backend/footer.php';
-    } else {
-      include './main/views/components/backend/head.php';
-      include './main/views/body/backend/login.php';
-    }
-    break;
-
-  case 'cprets':
-    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-      include './main/views/components/backend/head.php';
-      include './main/views/components/backend/header.php';
-      include './main/views/components/backend/sidebar.php';
-      include './main/views/body/backend/comptes_prets.php';
-      include './main/views/components/backend/footer.php';
-    } else {
-      include './main/views/components/backend/head.php';
-      include './main/views/body/backend/login.php';
-    }
-    break;
 
   // Controllers //
 

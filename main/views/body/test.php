@@ -676,7 +676,7 @@
           <ul style="margin:0; padding-left:18px; line-height:1.8">
             <li>Vérifiez l'IBAN du bénéficiaire.</li>
             <li>N'approuvez jamais un virement que vous n'avez pas initié.</li>
-            <li>Activez la double authentification (2FA).</li>
+
           </ul>
         </div>
       </section>

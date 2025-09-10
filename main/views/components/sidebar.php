@@ -18,19 +18,19 @@
        <li class="nav-item">
          <a class="nav-link text-dark" href="#">
            <i class="material-symbols-rounded opacity-5">credit_card</i>
-           <span class="nav-link-text ms-1">Mon Compte</span>
+           <span class="nav-link-text ms-1">Recharger Mon Compte</span>
          </a>
        </li>
-       <li class="nav-item">
+       <!-- <li class="nav-item">
          <a class="nav-link text-dark" href="#">
            <i class="material-symbols-rounded opacity-5">payments</i>
            <span class="nav-link-text ms-1">Virement</span>
          </a>
-       </li>
+       </li> -->
        <li class="nav-item">
-         <a class="nav-link text-dark" href="#">
+         <a class="nav-link text-dark" href="./?page=transfere">
            <i class="material-symbols-rounded opacity-5">sync_alt</i>
-           <span class="nav-link-text ms-1">Transactions</span>
+           <span class="nav-link-text ms-1">Transferer de l'argent</span>
          </a>
        </li>
        <li class="nav-item">
@@ -39,12 +39,12 @@
            <span class="nav-link-text ms-1">Demande Prêts</span>
          </a>
        </li>
-       <li class="nav-item">
+       <!--  <li class="nav-item">
          <a class="nav-link text-dark" href="#">
            <i class="material-symbols-rounded opacity-5">settings</i>
            <span class="nav-link-text ms-1">Paramètres</span>
          </a>
-       </li>
+       </li> -->
 
        <li class="nav-item">
          <a class="nav-link text-dark" href="#">
