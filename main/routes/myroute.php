@@ -47,6 +47,16 @@ switch ($page) {
     }
     break;
 
+  case 'transfert1':
+    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
+      include './main/api/transfert.php';
+      //include './main/views/components/footer.php';
+    } else {
+      include './main/views/components/head.php';
+      include './main/views/body/login.php';
+    }
+    break;
+
   case 'verif':
     if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
       include './main/api/verifierCompte.php';

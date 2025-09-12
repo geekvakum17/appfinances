@@ -11,20 +11,6 @@ class UserRequest
 
   /****************** OPERATIONS USERS *******************/
 
-  // Fonction d'authentification sécurisée (avec password_verify)
-  /* public function authenticateUser(string $username, string $password)
-  {
-    $sql = 'SELECT * FROM user WHERE username = :username LIMIT 1';
-    $stmt = $this->databaseConnection->prepare($sql);
-    $stmt->bindValue(':username', $username, PDO::PARAM_STR);
-    $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($user && password_verify($password, $user['password'])) {
-      return $user;
-    }
-    return false;
-  } */
 
   public function authenticateUser(string $username, string $password)
   {
@@ -111,8 +97,58 @@ class UserRequest
     return $result ? (float) $result['solde'] : null;
   }
 
+  public function effectuerTransfert(
+    string $numCdonneur,
+    string $numCrecip,
+    float $montant,
+    string $devise,
+    string $motif
+  ): bool {
+    try {
+      $this->databaseConnection->beginTransaction();
 
 
+      // Débit compte émetteur
+      $sqlDebit = "UPDATE compte SET solde = solde - :montant WHERE numeroCompte = :numCdonneur";
+      $stmt = $this->databaseConnection->prepare($sqlDebit);
+      $stmt->bindValue(':montant', $montant, PDO::PARAM_STR);
+      $stmt->bindValue(':numCdonneur', $numCdonneur, PDO::PARAM_STR);
+      $stmt->execute();
+
+      if ($stmt->rowCount() === 0) {
+        throw new Exception("Échec du débit du compte émetteur.");
+      }
+
+      // Crédit compte destinataire
+      $sqlCredit = "UPDATE compte SET solde = solde + :montant WHERE numeroCompte = :numCrecip";
+      $stmt = $this->databaseConnection->prepare($sqlCredit);
+      $stmt->bindValue(':montant', $montant, PDO::PARAM_STR);
+      $stmt->bindValue(':numCrecip', $numCrecip, PDO::PARAM_STR);
+      $stmt->execute();
+
+      if ($stmt->rowCount() === 0) {
+        throw new Exception("Compte destinataire introuvable.");
+      }
+
+      // Enregistrement transaction
+      $sqlTrans = "INSERT INTO transactions (numCdonneur, numCrecip, montant, devise, motif, date)
+                     VALUES (:numCdonneur, :numCrecip, :montant, :devise, :motif, NOW())";
+      $stmt = $this->databaseConnection->prepare($sqlTrans);
+      $stmt->bindValue(':numCdonneur', $numCdonneur, PDO::PARAM_STR);
+      $stmt->bindValue(':numCrecip', $numCrecip, PDO::PARAM_STR);
+      $stmt->bindValue(':montant', $montant, PDO::PARAM_INT);
+      $stmt->bindValue(':devise', $devise, PDO::PARAM_STR);
+      $stmt->bindValue(':motif', $motif, PDO::PARAM_STR);
+      $stmt->execute();
+
+      $this->databaseConnection->commit();
+      return true;
+    } catch (Exception $e) {
+      $this->databaseConnection->rollBack();
+      error_log("Erreur transfert : " . $e->getMessage());
+      throw $e; // Rejette l'exception pour ton API afin que le client voie le message
+    }
+  }
 
 
   // Récupérer le rôle par ID
@@ -123,5 +159,55 @@ class UserRequest
     $stmt->bindValue(':id_role', $id_role, PDO::PARAM_INT);
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
+  }
+
+  public function getEmailByCompte(string $numeroCompte): ?string
+  {
+    // Étape 1 : récupérer le code client
+    $sql = 'SELECT codeClient FROM compte WHERE numeroCompte = :numeroCompte LIMIT 1';
+    $stmt = $this->databaseConnection->prepare($sql);
+    $stmt->bindValue(':numeroCompte', $numeroCompte, PDO::PARAM_STR);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$row) {
+      return null; // Pas trouvé
+    }
+
+    $codeClient = $row['codeClient'];
+
+    // Étape 2 : chercher dans les tables correspondantes
+    // Particulier
+    $sql = 'SELECT emailcli AS email FROM clientparticulier WHERE codeClient = :codeClient LIMIT 1';
+    $stmt = $this->databaseConnection->prepare($sql);
+    $stmt->bindValue(':codeClient', $codeClient, PDO::PARAM_STR);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row && !empty($row['email'])) {
+      return $row['email'];
+    }
+
+    // Organisme
+    $sql = 'SELECT emailorg AS email FROM clientorganisme WHERE codeClient = :codeClient LIMIT 1';
+    $stmt = $this->databaseConnection->prepare($sql);
+    $stmt->bindValue(':codeClient', $codeClient, PDO::PARAM_STR);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row && !empty($row['email'])) {
+      return $row['email'];
+    }
+
+    // Autres services
+    $sql = 'SELECT emailcli AS email FROM clientautreservice WHERE codeClient = :codeClient LIMIT 1';
+    $stmt = $this->databaseConnection->prepare($sql);
+    $stmt->bindValue(':codeClient', $codeClient, PDO::PARAM_STR);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row && !empty($row['email'])) {
+      return $row['email'];
+    }
+
+    // Si rien trouvé
+    return null;
   }
 }

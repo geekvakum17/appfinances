@@ -42,7 +42,7 @@ if (session_status() === PHP_SESSION_NONE) {
           <h5>Transférer de l'argent</h5>
         </div>
         <div class="card-body">
-          <form id="transferForm" class="form">
+          <form id="transferForm" class="form" method="POST">
             <input type="hidden" name="instruction" value="transArg" />
             <div class="row">
               <div class="col-md-6 mb-3">
@@ -79,60 +79,19 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
   </div>
 
-  <!-- Modals pour confirmation, erreur et succès (simplifié) -->
-  <div class="modal fade" id="confirmModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Confirmation du Transfert</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <p>Vérifiez les informations avant de valider :</p>
-          <ul>
-            <li><b>Depuis :</b> <span id="confirmFrom"></span></li>
-            <li><b>Vers :</b> <span id="confirmTo"></span></li>
-            <li><b>Montant :</b> <span id="confirmAmount"></span> <span id="confirmCurrency"></span></li>
-            <li><b>Libellé :</b> <span id="confirmLabel"></span></li>
-          </ul>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-          <button type="button" class="btn btn-success" id="confirmBtn">Valider</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="modal fade" id="errorModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-danger">
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title">Erreur</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body" id="errorModalMessage">Une erreur est survenue.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="successModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-success">
-        <div class="modal-header bg-success text-white">
-          <h5 class="modal-title">Succès</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body" id="successModalMessage">✅ Transfert effectué avec succès !</div>
-      </div>
-    </div>
-  </div>
 </div>
+
+<script>
+  const BASE_URL = "<?= BASE_URL ?>";
+</script>
+
 
 <script>
   async function chargerInfosCompte() {
     try {
-      const response = await fetch('/appfinances/main/api/getinfoconcter.php');
+      const response = await fetch(`${BASE_URL}main/api/getinfoconcter.php`);
+
       const data = await response.json();
 
       if (data.error) {
@@ -166,7 +125,7 @@ if (session_status() === PHP_SESSION_NONE) {
   chargerInfosCompte();
   setInterval(chargerInfosCompte, 10000);
 
-  // Vérifier compte destinataire
+  // Vérifier compte destinataire en POST
   toIban.addEventListener("blur", async () => {
     const numDest = toIban.value.trim();
     if (numDest === "") {
@@ -176,7 +135,14 @@ if (session_status() === PHP_SESSION_NONE) {
     }
 
     try {
-      const res = await fetch(`/appfinances/main/api/verifierCompte.php?numCrecip=${encodeURIComponent(numDest)}`);
+      const res = await fetch(`${BASE_URL}main/api/verifierCompte.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `numCrecip=${encodeURIComponent(numDest)}`
+      });
+
       const data = await res.json();
 
       if (data.exists) {
@@ -194,6 +160,8 @@ if (session_status() === PHP_SESSION_NONE) {
       compteValide = false;
     }
   });
+
+
   // Vérification montant et solde suffisant (côté client)
   amountInput.addEventListener("blur", () => {
     const montant = parseFloat(amountInput.value);
@@ -221,74 +189,87 @@ if (session_status() === PHP_SESSION_NONE) {
       montantValide = false;
     }
   });
-  // Formulaire
-  const transferForm = document.getElementById("transferForm");
-  const confirmModal = new bootstrap.Modal(document.getElementById("confirmModal"));
-  const successModal = new bootstrap.Modal(document.getElementById("successModal"));
-  const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
+</script>
 
-  // Champs confirmation
-  const confirmFrom = document.getElementById("confirmFrom");
-  const confirmTo = document.getElementById("confirmTo");
-  const confirmAmount = document.getElementById("confirmAmount");
-  const confirmCurrency = document.getElementById("confirmCurrency");
-  const confirmLabel = document.getElementById("confirmLabel");
-
-  // Afficher la modal de confirmation
-  transferForm.addEventListener("submit", (e) => {
+<script>
+  document.getElementById("transferForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    const soldeActuel = parseFloat(soldeDisplay.textContent.replace(/\s/g, '').replace("FCFA", ""));
+    const form = this;
+    const formData = new FormData(form);
 
-    if (soldeActuel < 400) {
-      alert("Votre solde doit être ≥ 400 FCFA pour effectuer un transfert.");
-      return;
-    }
-    if (!compteValide) {
-      alert("Le compte destinataire n'est pas valide.");
-      return;
-    }
-    if (!montantValide) {
-      alert("Veuillez saisir un montant valide (≥ 500 FCFA et ≤ solde disponible).");
-      return;
-    }
+    const fromAccount = formData.get("numCdonneur");
+    const toAccount = formData.get("numCrecip");
+    const amount = formData.get("montantrans");
+    const currency = formData.get("devise");
+    const motif = formData.get("motifenvoie") || "Aucun";
 
-    confirmFrom.textContent = document.getElementById("fromAccount").value;
-    confirmTo.textContent = toIban.value;
-    confirmAmount.textContent = amountInput.value;
-    confirmCurrency.textContent = document.getElementById("currency").value;
-    confirmLabel.textContent = document.getElementById("label").value || "-";
-
-    confirmModal.show();
-  });
-
-  // Valider transfert
-  document.getElementById("confirmBtn").addEventListener("click", async () => {
-    const formData = new FormData(transferForm);
-
-    try {
-      const res = await fetch("/appfinances/main/api/transfert.php", {
-        method: "POST",
-        body: formData
-      });
-      const data = await res.json();
-
-      confirmModal.hide();
-
-      if (data.success) {
-        soldeDisplay.textContent = new Intl.NumberFormat("fr-FR").format(data.newSolde) + " FCFA";
-        transferForm.reset();
-        compteValide = false;
-        montantValide = false;
-        successModal.show();
-      } else {
-        document.getElementById("errorModalMessage").textContent = data.message;
-        errorModal.show();
+    // ✅ Confirmation avant transfert
+    Swal.fire({
+      title: "Confirmer le transfert",
+      html: `
+            <p>Voulez-vous vraiment transférer <b>${amount} ${currency}</b> ?</p>
+            <p>De : <b>${fromAccount}</b> → Vers : <b>${toAccount}</b></p>
+            <p>Motif : ${motif}</p>
+        `,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Oui, confirmer",
+      cancelButtonText: "Annuler",
+      confirmButtonColor: "#28a745",
+      cancelButtonColor: "#dc3545"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // ✅ Envoi AJAX
+        fetch(`${BASE_URL}main/api/transfert.php`, {
+            method: "POST",
+            body: formData,
+            credentials: "include" // envoie les cookies de session
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                willClose: () => {
+                  window.location.href = `${BASE_URL}?page=menu`;
+                }
+              });
+              form.reset();
+              if (data.newSolde !== undefined) {
+                document.getElementById("solde").textContent = new Intl.NumberFormat("fr-FR").format(data.newSolde) + " FCFA";
+              }
+            } else {
+              Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "error",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true
+              });
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "warning",
+              title: "Impossible de traiter le transfert",
+              showConfirmButton: false,
+              timer: 4000,
+              timerProgressBar: true
+            });
+          });
       }
-
-    } catch {
-      document.getElementById("errorModalMessage").textContent = "Erreur réseau, veuillez réessayer.";
-      errorModal.show();
-    }
+    });
   });
 </script>
