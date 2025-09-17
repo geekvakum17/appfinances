@@ -1,4 +1,8 @@
 <?php
+// main/models/connexion/Database.php
+
+// Inclure l'autoload Composer pour Dotenv et autres packages
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
@@ -18,12 +22,12 @@ class Database
       $dotenv->safeLoad(); // safeLoad : pas d'erreur si variable manquante
     }
 
-    // Récupération des variables d'environnement avec fallback
-    $host     = getenv('DB_HOST') ?: 'localhost';
-    $port     = getenv('DB_PORT') ?: '8889';
-    $dbname   = getenv('DB_NAME') ?: 'aiadesfinances';
-    $username = getenv('DB_USER') ?: 'root';
-    $password = getenv('DB_PASS') ?: 'root';
+    // Récupérer les variables d'environnement de manière sécurisée avec fallback
+    $host     = $_ENV['DB_HOST'] ?? getenv('DB_HOST') ?? 'localhost';
+    $port     = $_ENV['DB_PORT'] ?? getenv('DB_PORT') ?? '8889';
+    $dbname   = $_ENV['DB_NAME'] ?? getenv('DB_NAME') ?? 'aiadesfinances';
+    $username = $_ENV['DB_USER'] ?? getenv('DB_USER') ?? 'root';
+    $password = $_ENV['DB_PASS'] ?? getenv('DB_PASS') ?? 'root';
 
     $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8";
 
@@ -35,8 +39,9 @@ class Database
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
       ]);
     } catch (PDOException $ex) {
-      // Log sécurisé, message générique pour l'utilisateur
+      // Log sécurisé pour le développeur
       error_log("Erreur DB: " . $ex->getMessage());
+      // Message générique pour l'utilisateur
       die("Erreur critique : impossible de se connecter à la base de données.");
     }
   }

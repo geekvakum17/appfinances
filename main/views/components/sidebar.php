@@ -34,7 +34,7 @@
          </a>
        </li>
        <li class="nav-item">
-         <a class="nav-link text-dark" href="#">
+         <a class="nav-link text-dark" href="./?page=pret">
            <i class="material-symbols-rounded opacity-5">request_quote</i>
            <span class="nav-link-text ms-1">Demande Prêts</span>
          </a>

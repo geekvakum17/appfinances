@@ -149,18 +149,44 @@
              </div>
            </div>
          </div>
-
        </div>
      </div>
    </div>
+   <br>
+   <div class="col-md-12 col-10">
+     <div class="card">
+       <table class="table table-striped">
+         <thead>
+           <tr>
+             <th>#</th>
+             <th>Émetteur</th>
+             <th>Destinataire</th>
+             <th>Montant</th>
+             <th>Devise</th>
+             <th>Motif</th>
+             <th>Date</th>
+           </tr>
+         </thead>
+         <tbody id="transactionsTable"></tbody>
+       </table>
+       <div class="mt-3">
+         <button id="btnVoirTout" class="btn btn-primary btn-sm">Voir tout l’historique</button>
+       </div>
+     </div>
+   </div>
+   <br>
+
    <br><br><br><br>
+   <script>
+     const BASE_URL = "<?= BASE_URL ?>";
+   </script>
 
 
    <script>
      // Fonction pour charger les infos du client depuis l'API (qui utilise la session)
      async function chargerClient() {
        try {
-         const response = await fetch('http://localhost:8888/appfinances/main/api/getinfoconcter.php');
+         const response = await fetch(`${BASE_URL}main/api/getinfoconcter.php`);
          const data = await response.json();
 
          if (data.error) {
@@ -196,4 +222,68 @@
 
      // Rafraîchir toutes les 10 secondes automatiquement
      setInterval(chargerClient, 10000);
+
+     let afficherTout = false; // 🔧 Par défaut : seulement 5 dernières
+
+     async function chargerTransactions() {
+       try {
+         const res = await fetch(`${BASE_URL}main/api/getTransactions.php`, {
+           method: "GET",
+           credentials: "include"
+         });
+
+         const data = await res.json();
+         console.log("DEBUG transactions :", data);
+
+         if (!data.success) {
+           document.getElementById("transactionsTable").innerHTML =
+             `<tr><td colspan="7">${data.message}</td></tr>`;
+           return;
+         }
+
+         const tbody = document.getElementById("transactionsTable");
+         tbody.innerHTML = "";
+
+         const numeroCompte = data.numeroCompte; // compte connecté
+
+         // 🔥 Si afficherTout = false → limiter à 5 dernières
+         const transactionsAffichees = afficherTout ? data.transactions : data.transactions.slice(0, 5);
+
+         transactionsAffichees.forEach((t, index) => {
+           const estEmise = (t.numCdonneur === numeroCompte);
+
+           const row = `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${t.numCdonneur}</td>
+          <td>${t.numCrecip}</td>
+          <td style="font-weight:bold; color:${estEmise ? 'red' : 'green'};">
+            ${estEmise ? '-' : '+'} ${new Intl.NumberFormat("fr-FR").format(t.montant)} ${t.devise}
+          </td>
+          <td>${t.devise}</td>
+          <td>${t.motif}</td>
+          <td>${new Date(t.date).toLocaleString("fr-FR")}</td>
+        </tr>
+      `;
+           tbody.innerHTML += row;
+         });
+       } catch (err) {
+         console.error("Erreur :", err);
+       }
+     }
+
+     // Charger au démarrage
+     chargerTransactions();
+
+     // Rafraîchir toutes les 10 secondes
+     setInterval(chargerTransactions, 10000);
+
+     // 🎯 Gestion du bouton
+     document.getElementById("btnVoirTout").addEventListener("click", () => {
+       afficherTout = !afficherTout;
+       document.getElementById("btnVoirTout").textContent = afficherTout ?
+         "Afficher seulement les 5 dernières" :
+         "Voir tout l’historique";
+       chargerTransactions();
+     });
    </script>

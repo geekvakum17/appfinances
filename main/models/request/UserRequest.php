@@ -210,4 +210,38 @@ class UserRequest
     // Si rien trouvé
     return null;
   }
+
+  public function getCompteByCodeClient(string $codeClient): string|false
+  {
+    $sql = "SELECT numeroCompte FROM compte WHERE codeClient = :codeClient LIMIT 1";
+    $stmt = $this->databaseConnection->prepare($sql);
+    $stmt->bindValue(':codeClient', $codeClient, PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $stmt->fetchColumn() ?: false;
+  }
+
+
+
+  public function getTransactionsByCompte(string $numeroCompte): array
+  {
+    $sql = "SELECT t.id_transaction, t.numCdonneur, t.numCrecip, t.montant, t.devise, t.motif, t.date
+            FROM transactions t
+            WHERE t.numCdonneur = :numeroCompte OR t.numCrecip = :numeroCompte
+            ORDER BY t.date DESC";
+    $stmt = $this->databaseConnection->prepare($sql);
+    $stmt->bindValue(':numeroCompte', $numeroCompte, PDO::PARAM_STR);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+  }
+
+
+
+  public function getPaliersPret(): array
+  {
+    $sql = "SELECT nomcpret, fraisoucprets, tauxinteret, montantmin, montantmax, dureemaxremb, dureeminremb FROM infocompteprets";
+    $stmt = $this->databaseConnection->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC); // jamais false
+  }
 }

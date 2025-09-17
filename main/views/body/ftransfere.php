@@ -44,11 +44,12 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="card-body">
           <form id="transferForm" class="form" method="POST">
             <input type="hidden" name="instruction" value="transArg" />
+            <input type="hidden" class="form-control highlight-input" id="fromAccount" name="numCdonneur" readonly>
             <div class="row">
-              <div class="col-md-6 mb-3">
+              <!-- <div class="col-md-6 mb-3">
                 <label for="fromAccount" class="form-label">Depuis le compte</label>
-                <input type="text" class="form-control highlight-input" id="fromAccount" name="numCdonneur" readonly>
-              </div>
+                
+              </div> -->
               <div class="col-md-6 mb-3">
                 <label for="toIban" class="form-label">Vers N° compte</label>
                 <input type="text" class="form-control highlight-input" id="toIban" name="numCrecip" required>
