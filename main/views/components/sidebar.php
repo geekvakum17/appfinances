@@ -47,9 +47,9 @@
        </li> -->
 
        <li class="nav-item">
-         <a class="nav-link text-dark" href="#">
+         <a class="nav-link text-dark" href="./?page=profile">
            <i class="material-symbols-rounded opacity-5">person</i>
-           <span class="nav-link-text ms-1">Profile</span>
+           <span class="nav-link-text ms-1">Mon Profile</span>
          </a>
        </li>
        <li class="nav-item">

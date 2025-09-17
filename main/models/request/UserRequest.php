@@ -236,12 +236,33 @@ class UserRequest
   }
 
 
-
   public function getPaliersPret(): array
   {
     $sql = "SELECT nomcpret, fraisoucprets, tauxinteret, montantmin, montantmax, dureemaxremb, dureeminremb FROM infocompteprets";
     $stmt = $this->databaseConnection->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC); // jamais false
+  }
+
+
+  public function getInfoProfileclient(string $codeClient): array|false
+  {
+    $sql = "
+        SELECT nompnomcli AS nom, contactcli AS contact, emailcli AS email, NULL AS organisation, NULL AS org_email, NULL AS org_tel
+        FROM clientparticulier WHERE codeClient = :codeClient
+        UNION
+        SELECT nomorg, telorg, emailorg, nomorg, NULL, NULL 
+        FROM clientorganisme WHERE codeClient = :codeClient
+        UNION
+        SELECT nompnomcli AS nom, contactcli AS contact, emailcli AS email, NULL, NULL, NULL
+        FROM clientautreservice WHERE codeClient = :codeClient
+        LIMIT 1
+    ";
+
+    $stmt = $this->databaseConnection->prepare($sql);
+    $stmt->bindValue(':codeClient', $codeClient, PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
   }
 }

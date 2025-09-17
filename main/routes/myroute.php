@@ -63,6 +63,19 @@ switch ($page) {
     }
     break;
 
+  case 'profile':
+    if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
+      include './main/views/components/head.php';
+      include './main/views/components/sidebar.php';
+      include './main/views/components/header.php';
+      include './main/views/body/profile.php';
+      include './main/views/components/footer.php';
+    } else {
+      include './main/views/components/head.php';
+      include './main/views/body/login.php';
+    }
+    break;
+
   case 'infoget':
     if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
       include './main/api/getinfoconcter.php';
@@ -75,7 +88,7 @@ switch ($page) {
 
   case 'transfert1':
     if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-      include './main/api/getPaliers.php';
+      include './main/api/getInfoprofile.php';
       //include './main/views/components/footer.php';
     } else {
       include './main/views/components/head.php';
