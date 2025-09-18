@@ -17,19 +17,39 @@ switch ($instruction) {
     case "login":
         $username = getPost('username');
         $password = getPost('password');
-        $resultat = $UserRequest->authenticateUser($username, $password);
 
-        if (is_array($resultat) && !empty($resultat)) {
-            // Stocker uniquement l'identifiant
-            $_SESSION['login'] = true;
-            $_SESSION['codeClient'] = $resultat['codeClient'];
-            header("Location: {$urlBase}?page=menu");
-            exit();
-        } else {
-            $_SESSION['error'] = "Nom utilisateur ou mot de passe incorrect";
+        // Vérifie que les champs ne sont pas vides
+        if (empty($username) || empty($password)) {
+            $_SESSION['error'] = "Veuillez remplir tous les champs.";
             header("Location: {$urlBase}?page=login");
             exit();
         }
+
+        // Authentification
+        $resultat = $UserRequest->authenticateUser($username, $password);
+
+        if (is_array($resultat) && !empty($resultat)) {
+            // Stocker les infos essentielles en session
+            $_SESSION['login'] = true;
+            $_SESSION['codeClient'] = $resultat['codeClient'] ?? null;
+            $_SESSION['typeProfile'] = $resultat['typeProfile'] ?? null;
+
+            // Redirection selon le type de profil
+            switch ((int) $_SESSION['typeProfile']) {
+                case 4:
+                    header("Location: {$urlBase}?page=menu1");
+                    break;
+                default:
+                    header("Location: {$urlBase}?page=menu");
+                    break;
+            }
+            exit();
+        } else {
+            $_SESSION['error'] = "Nom utilisateur ou mot de passe incorrect.";
+            header("Location: {$urlBase}?page=login");
+            exit();
+        }
+
 
         break;
 

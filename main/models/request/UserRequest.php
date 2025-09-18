@@ -15,7 +15,7 @@ class UserRequest
   public function authenticateUser(string $username, string $password)
   {
     $sql = "
-        SELECT u.iduser, u.username, u.password, u.typeuser, u.codeClient,
+        SELECT u.iduser, u.username, u.password, u.typeuser, u.codeClient, u.typeProfile,
                o.nomorg,
                p.nompnomcli,
                s.nompnomcli AS nompcliaservices,
