@@ -40,7 +40,7 @@ switch ($page) {
   case 'menu1':
     if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
       include './main/views/components/head.php';
-      include './main/views/components/sidebar1.php';
+      include './main/views/components/sidebar.php';
       include './main/views/components/header.php';
       include './main/views/body/menupret.php';
       include './main/views/components/footer.php';
@@ -101,7 +101,7 @@ switch ($page) {
 
   case 'transfert1':
     if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-      include './main/api/getInfoprofile.php';
+      include './main/api/updatePhoto.php';
       //include './main/views/components/footer.php';
     } else {
       include './main/views/components/head.php';

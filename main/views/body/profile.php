@@ -7,7 +7,13 @@
     <div class="row gx-4 mb-2">
       <div class="col-auto">
         <div class="avatar avatar-xl position-relative">
-          <img src="public/assets/img/user.png" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+          <img id="profileImage"
+            src="public/assets/user/user.png"
+            alt="profile_image"
+            class="w-100 border-radius-lg shadow-sm"
+            style="cursor:pointer;"
+            title="Cliquez pour changer la photo">
+          <input type="file" id="uploadPhoto" accept="image/*" style="display:none;">
         </div>
       </div>
       <div class="col-auto my-auto">
@@ -22,6 +28,10 @@
             <li class="list-group-item border-0 ps-0 text-sm">
               <strong class="text-dark">Email:</strong> &nbsp;
               <span id="email">alecthompson@mail.com</span>
+            </li>
+            <li class="list-group-item border-0 ps-0 text-sm">
+              <strong class="text-dark">Adresse</strong> &nbsp;
+              <span id="adresse">alecthompson@mail.com</span>
             </li>
           </ul>
 
@@ -67,41 +77,91 @@
 </div>
 
 <script>
-  const BASE_URL = "<?= BASE_URL ?>"; // définie côté PHP
+  const BASE_URL = "<?= BASE_URL ?>"; // défini côté PHP
+  const profileImage = document.getElementById("profileImage");
+  const uploadPhoto = document.getElementById("uploadPhoto");
 
-  // Charger les infos du profil
-  fetch(`${BASE_URL}main/api/getInfoprofile.php`)
-    .then(res => res.json())
-    .then(data => {
+  // Fonction pour forcer le rechargement de l'image avec cache-buster
+  function setProfileImage(path) {
+    profileImage.src = `${BASE_URL}${path}?t=${Date.now()}`;
+  }
+
+  // 1️⃣ Charger les infos et la photo du profil au chargement
+  document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      const res = await fetch(`${BASE_URL}main/api/getInfoprofile.php`);
+      const data = await res.json();
+
       if (data.success) {
+        // Infos utilisateur
         document.getElementById("nom").innerText = data.client.nom || "—";
         document.getElementById("contact").innerText = data.client.contact || "—";
         document.getElementById("email").innerText = data.client.email || data.client.org_email || "—";
-      } else {
-        console.error(data.message);
+        document.getElementById("adresse").innerText = data.client.adresse || "—";
+
+        // ⚡ Définir la photo du profil depuis la BD
+        if (data.client.profileimage && data.client.profileimage !== "") {
+          profileImage.src = `${BASE_URL}${data.client.photo}?t=${Date.now()}`;
+        } else {
+          // Optionnel : mettre une image par défaut si aucune photo en base
+          profileImage.src = "public/assets/user/user.png";
+        }
       }
-    })
-    .catch(err => console.error("Erreur API profil:", err));
+    } catch (err) {
+      console.error("Erreur récupération profil:", err);
+    }
 
-  // Gestion formulaire changement mot de passe
-  document.getElementById("formPassword").addEventListener("submit", function(e) {
-    e.preventDefault();
+  });
 
-    const formData = new FormData(this);
-
-    fetch(`${BASE_URL}main/api/updatePassword.php`, {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.json())
+  document.addEventListener("DOMContentLoaded", function() {
+    fetch(`${BASE_URL}main/api/getprofileImage.php`)
+      .then(response => response.json())
       .then(data => {
-        alert(data.message);
-        if (data.success) {
-          document.getElementById("formPassword").reset();
-          const modal = bootstrap.Modal.getInstance(document.getElementById("modalPassword"));
-          modal.hide();
+        if (data.success && data.filePath) {
+          document.getElementById("profileImage").src = data.filePath + "?v=" + Date.now();
         }
       })
-      .catch(err => console.error("Erreur API password:", err));
+      .catch(err => console.error("Erreur chargement image:", err));
   });
+
+
+
+  // 2️⃣ Cliquer sur l'image ouvre le sélecteur de fichier
+  profileImage.addEventListener("click", () => uploadPhoto.click());
+
+  // 3️⃣ Upload de la nouvelle image avec prévisualisation
+
+  uploadPhoto.addEventListener("change", async () => {
+    const file = uploadPhoto.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    const res = await fetch(`${BASE_URL}main/api/updatePhoto.php`, {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    console.log(data); // ⚡ Vérifie dans la console
+
+    if (data.success) {
+      profileImage.src = `${BASE_URL}${data.filePath}?t=${Date.now()}`;
+    } else {
+      alert(data.message);
+    }
+  });
+
+  fetch(`${BASE_URL}main/api/updatePhoto.php`, {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById("profileImage").src = data.filePath + "?v=" + Date.now();
+      } else {
+        alert(data.message);
+      }
+    });
 </script>

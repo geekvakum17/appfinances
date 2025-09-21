@@ -48,6 +48,9 @@
          </div>
        </div>
      </div>
+     <?php if ($_SESSION['typeProfile'] == 4) {
+        echo "<!--";
+      } ?>
      <div class="col-xl-4 col-sm-6">
        <div class="card">
          <div class="card-header p-2 ps-3">
@@ -67,6 +70,9 @@
          </div>
        </div>
      </div>
+     <?php if ($_SESSION['typeProfile'] == 4) {
+        echo "-->";
+      } ?>
 
      <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
        <div class="card">
@@ -134,6 +140,9 @@
              </div>
            </div>
          </div>
+         <?php if ($_SESSION['typeProfile'] == 4) {
+            echo "<!--";
+          } ?>
          <div class="col-md-6 col-6">
            <div class="card">
              <div class="card-header mx-4 p-3 text-center">
@@ -147,6 +156,9 @@
                <hr class="horizontal dark my-3">
                <h5 class="mb-0">0 FCFA</h5>
              </div>
+             <?php if ($_SESSION['typeProfile'] == 4) {
+                echo "-->";
+              } ?>
            </div>
          </div>
        </div>

@@ -33,17 +33,8 @@ switch ($instruction) {
             $_SESSION['login'] = true;
             $_SESSION['codeClient'] = $resultat['codeClient'] ?? null;
             $_SESSION['typeProfile'] = $resultat['typeProfile'] ?? null;
-
             // Redirection selon le type de profil
-            switch ((int) $_SESSION['typeProfile']) {
-                case 4:
-                    header("Location: {$urlBase}?page=menu1");
-                    break;
-                default:
-                    header("Location: {$urlBase}?page=menu");
-                    break;
-            }
-            exit();
+            header("Location: {$urlBase}?page=menu");
         } else {
             $_SESSION['error'] = "Nom utilisateur ou mot de passe incorrect.";
             header("Location: {$urlBase}?page=login");

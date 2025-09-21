@@ -251,11 +251,14 @@ class UserRequest
         SELECT nompnomcli AS nom, contactcli AS contact, emailcli AS email, NULL AS organisation, NULL AS org_email, NULL AS org_tel
         FROM clientparticulier WHERE codeClient = :codeClient
         UNION
-        SELECT nomorg, telorg, emailorg, nomorg, NULL, NULL 
+        SELECT nomorg, telorg, emailorg, nomorg, adresseorg, telorg
         FROM clientorganisme WHERE codeClient = :codeClient
         UNION
         SELECT nompnomcli AS nom, contactcli AS contact, emailcli AS email, NULL, NULL, NULL
         FROM clientautreservice WHERE codeClient = :codeClient
+        UNION
+        SELECT nompnomcli AS nom, contactcli AS contact, emailcli AS email, NULL, NULL, NULL
+        FROM clientcredit WHERE codeClient = :codeClient
         LIMIT 1
     ";
 
@@ -264,5 +267,27 @@ class UserRequest
     $stmt->execute();
 
     return $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
+  }
+
+  public function getupProfile(string $profileimage, string $codeClient): bool
+  {
+    $sql = "UPDATE user SET profileimage = :profileimage WHERE codeClient = :codeClient";
+    $stmt = $this->databaseConnection->prepare($sql);
+
+    $stmt->bindValue(':profileimage', $profileimage, PDO::PARAM_LOB);
+    $stmt->bindValue(':codeClient', $codeClient, PDO::PARAM_STR);
+
+    return $stmt->execute(); // renvoie true si l'update a réussi, sinon false
+  }
+
+  public function getProfileImage(string $codeClient): ?string
+  {
+    $sql = "SELECT profileimage FROM user WHERE codeClient = :codeClient LIMIT 1";
+    $stmt = $this->databaseConnection->prepare($sql);
+    $stmt->bindValue(':codeClient', $codeClient, PDO::PARAM_STR);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result && !empty($result['profileimage']) ? $result['profileimage'] : null;
   }
 }
